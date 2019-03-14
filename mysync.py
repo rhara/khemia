@@ -1,35 +1,22 @@
 from ftplib import FTP
 from urllib import request
-import os
+import os, re
 
 
 class MyFTP:
-    def __init__(self, host, user='anonymous', password='jvalao@auvia.com'):
-        self.host = host
-        self.user = user
-        self.password = password
+    def __init__(self, base, user='anonymous', password='jvalao@auvia.com'):
+        pat = re.compile('^ftp://([^/]+)(/.*)$')
+        self.base = base
+        m = pat.match(base)
+        host = m.group(1)
+        self.remote_dir = m.group(2)
 
         self.ftp_instance = FTP(host, user, password)
-        self.remote_dir = None
-        self.ls = None
+        self.ftp_instance.cwd(self.remote_dir)
         self.local_dir = '.'
-
-    def set_remote_list(self, remote_dir):
-        lines = []
-        self.remote_dir = remote_dir
-        self.ftp_instance.dir(self.remote_dir, lines.append)
-        self.ls = {}
-        for line in lines:
-            it = line.rstrip().split()
-            name = it[-1]
-            size = int(it[4])
-            self.ls[name] = size
 
     def set_local_dir(self, local_dir):
         self.local_dir = local_dir
-
-    def get_size(self, name):
-        return self.ls[name]
 
     def download(self, name, mode='binary', check_size=True):
         dest_name = os.path.join(self.local_dir, name)
@@ -40,10 +27,14 @@ class MyFTP:
         except:
             pass
         try:
-            remote_size = self.get_size(name)
+            lines = []
+            self.ftp_instance.dir(name, lines.append)
+            remote_size = int(lines[0].strip().split()[4])
             if check_size and (local_size is None or local_size != remote_size):
+                dir_name = os.path.dirname(dest_name)
+                os.makedirs(dir_name, exist_ok=True)
                 self.ftp_instance.cwd(self.remote_dir)
-                print(f'{dest_name} <- {self.host}:{self.remote_dir}/{name}')
+                print(f'{dest_name} <- {self.base}/{name}')
                 if mode[0] == 'b':
                     with open(dest_name, 'wb') as f:
                         self.ftp_instance.retrbinary(f'RETR {name}', f.write)
@@ -54,7 +45,8 @@ class MyFTP:
                 print(f'{dest_name} up-to-date')
         except KeyboardInterrupt as e:
             raise e
-        except:
+        except Exception as e:
+            print(e)
             print(f'{dest_name} download error')
 
 
@@ -79,6 +71,8 @@ class MyHTTP:
             res = request.urlopen(src)
             remote_size = int(res.getheader('Content-Length'))
             if check_size and (local_size is None or local_size != remote_size):
+                dir_name = os.path.dirname(dest_name)
+                os.makedirs(dir_name, exist_ok=True)
                 print(f'{dest_name} <- {src}')
                 request.urlretrieve(src, dest_name)
             else:
