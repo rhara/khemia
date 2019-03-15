@@ -30,11 +30,12 @@ class MyFTP:
             lines = []
             self.ftp_instance.dir(name, lines.append)
             remote_size = int(lines[0].strip().split()[4])
+            megabytes = remote_size/1024/1024
             if check_size and (local_size is None or local_size != remote_size):
                 dir_name = os.path.dirname(dest_name)
                 os.makedirs(dir_name, exist_ok=True)
                 self.ftp_instance.cwd(self.remote_dir)
-                print(f'{dest_name} <- {self.base}/{name}')
+                print(f'{dest_name} {megabytes:.2f}MB <- {self.base}/{name}')
                 if mode[0] == 'b':
                     with open(dest_name, 'wb') as f:
                         self.ftp_instance.retrbinary(f'RETR {name}', f.write)
@@ -70,10 +71,11 @@ class MyHTTP:
         try:
             res = request.urlopen(src)
             remote_size = int(res.getheader('Content-Length'))
+            megabytes = remote_size/1024/1024
             if check_size and (local_size is None or local_size != remote_size):
                 dir_name = os.path.dirname(dest_name)
                 os.makedirs(dir_name, exist_ok=True)
-                print(f'{dest_name} <- {src}')
+                print(f'{dest_name} {megabytes:.2f}MB <- {src}')
                 request.urlretrieve(src, dest_name)
             else:
                 print(f'{dest_name} up-to-date')
