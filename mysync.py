@@ -15,6 +15,16 @@ class MyFTP:
         self.ftp_instance.cwd(self.remote_dir)
         self.local_dir = '.'
 
+    def get_file_list(self):
+        lines = []
+        ls = []
+        self.ftp_instance.retrlines('LIST', lines.append)
+        for line in lines:
+            it = line.strip().split()
+            name = it[8]
+            ls.append(name)
+        return ls
+
     def set_local_dir(self, local_dir):
         self.local_dir = local_dir
 

@@ -1,11 +1,11 @@
 from rdkit import Chem
-import os, gzip, time
+import os, io, gzip, time
 
 def getExtension(fname):
     dirname, bname = os.path.split(fname)
     i = bname.rindex('.')
     ext = bname[i+1:]
-    if ext == 'gz':
+    if ext in ['bz2', 'gz', 'xz', 'zip', 'zst']:
         try:
             i = bname[:i].rindex('.')
             ext = bname[i+1:]
@@ -23,20 +23,24 @@ class MolReader:
         elif ext == 'sdf.gz':
             self.istrm = gzip.open(fname, 'rb')
             self.ifs = Chem.ForwardSDMolSupplier(self.istrm)
-        elif ext == 'smi':
-            self.ifs = Chem.SmilesMolSupplier(fname)
-        elif ext == 'smi.gz':
+        elif ext in ['ism', 'smi', 'smiles']:
+            self.mode = 'line'
+            self.ifs = open(fname, 'rt')
+        elif ext in ['ism.gz', 'smi.gz', 'smiles.gz']:
             self.mode = 'line'
             self.ifs = gzip.open(fname, 'rt')
         else:
             raise Exception(f'Unknown input format "{ext}"')
 
-    def iter(self):
+    def __iter__(self):
         for obj in self.ifs:
             if self.mode == 'line':
-                if obj.startswith('SMILES'):
+                line = obj.strip()
+                it = line.split(maxsplit=1)
+                mol = Chem.MolFromSmiles(it[0])
+                if mol is None:
                     continue
-                mol = Chem.MolFromSmiles(obj)
+                mol.SetProp('_Name', it[1])
             else:
                 mol = obj
             yield mol
@@ -51,9 +55,9 @@ class MolWriter:
     def __init__(self, fname):
         ext = getExtension(fname)
         self.ostrm = None
-        if ext == 'smi':
+        if ext in ['ism', 'smi', 'smiles']:
             self.ofs = Chem.rdmolfiles.SmilesWriter(fname)
-        elif ext == 'smi.gz':
+        elif ext in ['ism.gz', 'smi.gz', 'smiles.gz']:
             self.ostrm = gzip.open(fname, 'wt')
             self.ofs = Chem.rdmolfiles.SmilesWriter(self.ostrm)
         elif ext == 'sdf':
