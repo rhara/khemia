@@ -1,5 +1,5 @@
 from rdkit import Chem
-import os, io, gzip, time
+import os, io, gzip, bz2, time
 
 def getExtension(fname):
     dirname, bname = os.path.split(fname)
@@ -23,12 +23,18 @@ class MolReader:
         elif ext == 'sdf.gz':
             self.istrm = gzip.open(fname, 'rb')
             self.ifs = Chem.ForwardSDMolSupplier(self.istrm)
+        elif ext == 'sdf.bz2':
+            self.istrm = bz2.open(fname, 'rb')
+            self.ifs = Chem.ForwardSDMolSupplier(self.istrm)
         elif ext in ['ism', 'smi', 'smiles']:
             self.mode = 'line'
             self.ifs = open(fname, 'rt')
         elif ext in ['ism.gz', 'smi.gz', 'smiles.gz']:
             self.mode = 'line'
             self.ifs = gzip.open(fname, 'rt')
+        elif ext in ['ism.bz2', 'smi.bz2', 'smiles.bz2']:
+            self.mode = 'line'
+            self.ifs = bz2.open(fname, 'rt')
         else:
             raise Exception(f'Unknown input format "{ext}"')
 
@@ -60,10 +66,16 @@ class MolWriter:
         elif ext in ['ism.gz', 'smi.gz', 'smiles.gz']:
             self.ostrm = gzip.open(fname, 'wt')
             self.ofs = Chem.rdmolfiles.SmilesWriter(self.ostrm)
+        elif ext in ['ism.bz2', 'smi.bz2', 'smiles.bz2']:
+            self.ostrm = bz2.open(fname, 'wt')
+            self.ofs = Chem.rdmolfiles.SmilesWriter(self.ostrm)
         elif ext == 'sdf':
             self.ofs = Chem.rdmolfiles.SDWriter(fname)
         elif ext == 'sdf.gz':
             self.ostrm = gzip.open(fname, 'wt')
+            self.ofs = Chem.rdmolfiles.SDWriter(self.ostrm)
+        elif ext == 'sdf.bz2':
+            self.ostrm = bz2.open(fname, 'wt')
             self.ofs = Chem.rdmolfiles.SDWriter(self.ostrm)
         else:
             raise Exception(f'Unknown output format "{ext}"')
