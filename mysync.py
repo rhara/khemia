@@ -22,7 +22,8 @@ class MyFTP:
         for line in lines:
             it = line.strip().split()
             name = it[8]
-            ls.append(name)
+            size = int(it[4])
+            ls.append((name, size))
         return ls
 
     def set_local_dir(self, local_dir):
