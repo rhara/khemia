@@ -61,6 +61,10 @@ class Writer:
 
     def close(self):
         try:
+            self.ofs.flush()
+        except:
+            pass
+        try:
             self.ofs.close()
         except:
             pass
@@ -81,4 +85,16 @@ class SDFWriter(Writer):
         if oname.endswith('.gz'):
             self.ofs = Chem.SDWriter(gzip.open(oname, 'wt'))
         else:
-            self.ofs = Chem.SDWriter(fname)
+            self.ofs = Chem.SDWriter(oname)
+
+    def write(self, mol, confId=None):
+        try:
+            if confId is None:
+                self.ofs.write(mol)
+            else:
+                self.ofs.write(mol, confId=confId)
+            return True
+        except:
+            return False
+
+
