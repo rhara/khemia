@@ -2,7 +2,25 @@ from rdkit import Chem
 import os, io, gzip, bz2, time
 
 
-class Reader:
+def MolReader(iname):
+    if iname.endswith('.smi.gz') or iname.endswith('.smi'):
+        return SmilesReader(iname)
+    elif iname.endswith('.sdf.gz') or iname.endswith('.sdf'):
+        return SDFReader(iname)
+    else:
+        raise Exception('Unknown reader format')
+
+
+def MolWriter(oname):
+    if oname.endswith('.smi.gz') or oname.endswith('.smi'):
+        return SmilesWriter(oname)
+    elif oname.endswith('.sdf.gz') or oname.endswith('.sdf'):
+        return SDFWriter(oname)
+    else:
+        raise Exception('Unknown reader format')
+
+
+class BaseReader:
     def __init__(self, iname):
         self.iname = iname
 
@@ -16,7 +34,7 @@ class Reader:
             pass
 
 
-class SmilesReader(Reader):
+class SmilesReader(BaseReader):
     def __init__(self, iname):
         super(SmilesReader, self).__init__(iname)
         fopen = gzip.open if iname.endswith('.gz') else open
@@ -34,7 +52,7 @@ class SmilesReader(Reader):
                 yield mol
 
 
-class SDFReader(Reader):
+class SDFReader(BaseReader):
     def __init__(self, iname):
         super(SDFReader, self).__init__(iname)
         if iname.endswith('.gz'):
@@ -47,7 +65,7 @@ class SDFReader(Reader):
             yield mol
 
 
-class Writer:
+class BaseWriter:
     def __init__(self, oname):
         self.oname = oname
         self.ofs = None
@@ -70,7 +88,7 @@ class Writer:
             pass
 
 
-class SmilesWriter(Writer):
+class SmilesWriter(BaseWriter):
     def __init__(self, oname):
         super(SmilesWriter, self).__init__(oname)
         if oname.endswith('.gz'):
@@ -79,7 +97,7 @@ class SmilesWriter(Writer):
             self.ofs = Chem.SmilesWriter(oname)
 
 
-class SDFWriter(Writer):
+class SDFWriter(BaseWriter):
     def __init__(self, oname):
         super(SDFWriter, self).__init__(oname)
         if oname.endswith('.gz'):

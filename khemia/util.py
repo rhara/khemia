@@ -1,7 +1,7 @@
 import os
 
 
-def showattr(v):
+def showAttr(v):
     print(type(v), ' '.join([d for d in dir(v) if d[0] != '_']))
 
 
