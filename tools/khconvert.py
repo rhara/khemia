@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from khemia.io import MolReader, MolWriter
+from khemia import MolReader, MolWriter
 import argparse
 
 def main():

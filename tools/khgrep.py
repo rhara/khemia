@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 
 from rdkit import Chem
-from khemia.io import MolReader, MolWriter
-from khemia.timer import Timer
+from khemia import MolReader, MolWriter, Timer
 import argparse
 
 def main():
