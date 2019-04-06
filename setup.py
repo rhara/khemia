@@ -14,6 +14,7 @@ setup(
     long_description_content_type='text/markdown',
     packages=find_packages(),
     scripts=['tools/khconvert.py', 'tools/khcount.py', 'tools/khcut.py', 'tools/khgrep.py'],
+    url='https://github.com/rhara/khemia',
     classifiers = [
         'Programming Language :: Python :: 3',
         'License :: OSI Approved :: MIT License',

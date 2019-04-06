@@ -1,0 +1,14 @@
+include .gitignore
+include README.md
+include khemia/timer.py
+include khemia/io.py
+include khemia/sync.py
+include khemia/util.py
+include khemia/version.py
+include khemia/__init__.py
+include tools/khconvert.py
+include tools/khcount.py
+include tools/khcut.py
+include tools/khgrep.py
+include MANIFEST.in
+include setup.py
