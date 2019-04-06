@@ -7,15 +7,15 @@ import argparse
 
 def main():
     parser = argparse.ArgumentParser(description='Substructure search molecule')
-    parser.add_argument('--in', '-i', type=str, dest='infname', help='Input file')
-    parser.add_argument('--out', '-o', type=str, help='Output file')
-    parser.add_argument('--pattern', '-p', type=str, help='Pattern')
+    parser.add_argument('--in', '-i', type=str, required=True, dest='iname', help='Input file')
+    parser.add_argument('--out', '-o', type=str, required=True, dest='oname', help='Output file')
+    parser.add_argument('--pattern', '-p', type=str, required=True, help='Pattern')
     args = parser.parse_args()
 
     pat = Chem.MolFromSmarts(args.pattern)
 
-    reader = MolReader(args.infname)
-    writer = MolWriter(args.out)
+    reader = MolReader(args.iname)
+    writer = MolWriter(args.oname)
 
     count = 0
     match_count = 0

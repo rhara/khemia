@@ -5,14 +5,14 @@ import argparse
 
 def main():
     parser = argparse.ArgumentParser(description='Convert molecule file')
-    parser.add_argument('--in', '-i', type=str, dest='infname', help='Input file')
-    parser.add_argument('--out', '-o', type=str, help='Output file')
+    parser.add_argument('--in', '-i', type=str, required=True, dest='iname', help='Input file')
+    parser.add_argument('--out', '-o', type=str, required=True, dest='oname', help='Output file')
     parser.add_argument('--tag', '-t', type=str, help='Tag to set title')
     parser.add_argument('-n', type=int, default=None, help='Max molecules in output')
     args = parser.parse_args()
 
-    reader = MolReader(args.infname)
-    writer = MolWriter(args.out)
+    reader = MolReader(args.iname)
+    writer = MolWriter(args.oname)
 
     count = 0
     for mol in reader:

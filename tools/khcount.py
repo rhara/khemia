@@ -5,10 +5,10 @@ import argparse
 
 def main():
     parser = argparse.ArgumentParser(description='Convert molecule file')
-    parser.add_argument('--in', '-i', type=str, dest='infname', help='Input file')
+    parser.add_argument('--in', '-i', type=str, required=True, dest='iname', help='Input file')
     args = parser.parse_args()
 
-    reader = MolReader(args.infname)
+    reader = MolReader(args.iname)
 
     count = 0
     error = 0

@@ -30,9 +30,9 @@ class BTWN:
 
 def main():
     parser = argparse.ArgumentParser(description='Convert molecule file')
-    parser.add_argument('--in', '-i', type=str, dest='infname', help='Input file')
-    parser.add_argument('--out', '-o', type=str, help='Output file')
-    parser.add_argument('--numbers', '-n', type=str, help='List format')
+    parser.add_argument('--in', '-i', type=str, required=True, dest='iname', help='Input file')
+    parser.add_argument('--out', '-o', type=str, required=True, dest='oname', help='Output file')
+    parser.add_argument('--numbers', '-n', type=str, required=True, help='List format')
     args = parser.parse_args()
 
     pat_ab = re.compile('^([0-9]+)-([0-9]+)$')
@@ -73,8 +73,8 @@ def main():
     g_le = LE(lower-1)
     g_ge = GE(upper+1)
 
-    reader = MolReader(args.infname)
-    writer = MolWriter(args.out)
+    reader = MolReader(args.iname)
+    writer = MolWriter(args.oname)
 
     count = 0
     written = 0
