@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 from khemia import version
 
 with open('README.md', 'r') as fh:
@@ -12,7 +12,7 @@ setup(
     description='Khemia Chemistry higher library',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    packages=['khemia'],
+    packages=find_packages(),
     scripts=['tools/khconvert.py', 'tools/khcount.py', 'tools/khcut.py', 'tools/khgrep.py'],
     classifiers = [
         'Programming Language :: Python :: 3',
