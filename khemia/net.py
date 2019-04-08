@@ -3,7 +3,7 @@ from urllib import request
 import os, re
 
 
-class MyFTP:
+class khFTP:
     def __init__(self, base, user='anonymous', password='jvalao@auvia.com'):
         pat = re.compile('^ftp://([^/]+)(/.*)$')
         self.base = base
@@ -62,7 +62,7 @@ class MyFTP:
             print(f'{dest_name} download error')
 
 
-class MyHTTP:
+class khHTTP:
     def __init__(self, base):
         self.base = base
         self.local_dir = '.'
