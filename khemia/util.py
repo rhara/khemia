@@ -16,3 +16,11 @@ def getExtension(fname):
         except:
             pass
     return ext
+
+
+def rename(mol, tagname):
+    try:
+        title = mol.GetProp(tagname)
+        mol.SetProp('_Name', title)
+    except:
+        pass
